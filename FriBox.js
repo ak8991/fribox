@@ -11,20 +11,30 @@ var path = require('path');
 
 var dataDir = "./data/";
 
+
+
+
 var streznik = http.createServer(function(zahteva, odgovor) {
    if (zahteva.url == '/') {
        posredujOsnovnoStran(odgovor);
    } else if (zahteva.url == '/datoteke') { 
        posredujSeznamDatotek(odgovor);
    } else if (zahteva.url.startsWith('/brisi')) { 
-       izbrisiDatoteko(odgovor, dataDir + zahteva.url.replace("/brisi", ""));
+      izbrisiDatoteko(odgovor, dataDir + zahteva.url.replace("/brisi", ""));
    } else if (zahteva.url.startsWith('/prenesi')) { 
        posredujStaticnoVsebino(odgovor, dataDir + zahteva.url.replace("/prenesi", ""), "application/octet-stream");
+   } else if (zahteva.url.startsWith('/poglej')) { 
+      posredujStaticnoVsebino(odgovor, dataDir + zahteva.url.replace("/poglej", ""), "");
    } else if (zahteva.url == "/nalozi") {
        naloziDatoteko(zahteva, odgovor);
    } else {
        posredujStaticnoVsebino(odgovor, './public' + zahteva.url, "");
    }
+});
+
+// Na tej točki strežnik poženemo
+streznik.listen(process.env.PORT, function() {
+   console.log("Strežnik je pognan."); 
 });
 
 function posredujOsnovnoStran(odgovor) {
@@ -95,3 +105,4 @@ function naloziDatoteko(zahteva, odgovor) {
         });
     });
 }
+
